@@ -91,7 +91,10 @@ jenkins_setup() {
   export GOPATH=${WORKSPACE}
   export PATH=${GOPATH}/bin:${PATH}
   
-  [ -z "$(which gvm)" ] && bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+  if [ -z "$(which gvm)" ]; then 
+    bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+    . $HOME/.gvm/scripts/gvm
+  fi
   eval "$(gvm ${GO_VERSION})"
 
   # Workaround for Python virtualenv path being too long.

@@ -7,15 +7,11 @@ test -z "$srcdir" && srcdir=.
 
 jenkins_setup
 
-export GOPATH=$WORKSPACE
-export PATH=$PATH:$GOPATH/bin
-
 if [ ! -d "$APM_SERVER_DIR" ] ; then
   echo "you need to define APM_SERVER_DIR environment variable pointing to the APM server source code"
   exit 1
 fi
 
-eval "$(gvm ${GO_VERSION})"
 echo "Installing hey-apm dependencies and running unit tests..."
 go get -v -u github.com/golang/dep/cmd/dep
 dep ensure -v

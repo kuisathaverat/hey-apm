@@ -86,20 +86,18 @@ jenkins_setup() {
   if [ -z ${GO_VERSION:-} ]; then
     get_go_version
   fi
-
-  # Setup Go.
-  export GOPATH=${WORKSPACE}
-  export PATH=${GOPATH}/bin:${PATH}
   
   [ -f "$HOME/.gvm/scripts/gvm" ] && . $HOME/.gvm/scripts/gvm
   
   if [ -z "$(which gvm)" ]; then 
     bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
     . $HOME/.gvm/scripts/gvm
-    # Setup Go.
-    export GOPATH=${WORKSPACE}
-    export PATH=${GOPATH}/bin:${PATH}
   fi
+  
+  # Setup Go.
+  export GOPATH=${WORKSPACE}
+  export PATH=${GOPATH}/bin:${PATH}
+  
   eval "$(gvm ${GO_VERSION})"
 
   # Workaround for Python virtualenv path being too long.
@@ -109,8 +107,6 @@ jenkins_setup() {
   # Write cached magefile binaries to workspace to ensure
   # each run starts from a clean slate.
   export MAGEFILE_CACHE="${WORKSPACE}/.magefile"
-  
-  export
 }
 
 docker_setup() {

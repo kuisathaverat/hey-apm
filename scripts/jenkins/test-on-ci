@@ -23,6 +23,7 @@ pipeline {
     durabilityHint('PERFORMANCE_OPTIMIZED')
   }
   parameters {
+    string(name: 'repo', defaultValue: "git@github.com:elastic/hey-apm.git", description: "Hey APM reposiroty URL.")
     string(name: 'branch_specifier', defaultValue: "v1", description: "Hey APM Branch/Tag/commit project to use.")
     string(name: 'GO_VERSION', defaultValue: "1.11.2", description: "Go version to use.")
     string(name: 'APM_SERVER_VERSION', defaultValue: "master", description: "APM Server Git branch/tag to use")
@@ -44,7 +45,7 @@ pipeline {
           steps {
             deleteDir()
             gitCheckout(basedir: "${BASE_DIR}", branch: params.branch_specifier, 
-              repo: 'git@github.com:elastic/hey-apm.git', 
+              repo: params.repo, 
               credentialsId: "${JOB_GIT_CREDENTIALS}")
             stash allowEmpty: true, name: 'source', useDefaultExcludes: false
           }

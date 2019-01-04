@@ -7,6 +7,33 @@
 # Script directory:
 _sdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+case $(uname) in
+"Darwin")
+  export GVM_ARCH="darwin"
+  ;;
+"Linux")
+  export GVM_ARCH="linux"
+  ;;
+"")
+  Message="I'm drowning here!  There's a partition at $space %!"
+  ;;
+*)
+  Message="I seem to be running with an nonexistent amount of disk space..."
+  ;;
+esa
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  export GVM_ARCH="linux"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  export GVM_ARCH="darwin"
+elif [[ "$OSTYPE" == "freebsd"* ]]; then
+  export GVM_ARCH="freebsd"
+else
+  err("Unknown OS")
+  exit 1
+fi
+
+ARCH
 # debug "msg"
 # Write a debug message to stderr.
 debug()
@@ -34,51 +61,6 @@ get_go_version() {
   fi
 }
 
-# install_gimme
-# Install gimme to HOME/bin.
-install_gimme() {
-  # Install gimme
-  if [ ! -f "${HOME}/bin/gimme" ]; then
-    mkdir -p ${HOME}/bin
-    curl -sL -o ${HOME}/bin/gimme https://raw.githubusercontent.com/travis-ci/gimme/v1.1.0/gimme
-    chmod +x ${HOME}/bin/gimme
-  fi
-
-  GIMME="${HOME}/bin/gimme"
-  debug "Gimme version $(${GIMME} version)"
-}
-
-# setup_go_root "version"
-# This configures the Go version being used. It sets GOROOT and adds
-# GOROOT/bin to the PATH. It uses gimme to download the Go version if
-# it does not already exist in the ~/.gimme dir.
-setup_go_root() {
-  local version=${1}
-
-  install_gimme
-
-  # Setup GOROOT and add go to the PATH.
-  ${GIMME} "${version}" > /dev/null
-  source "${HOME}/.gimme/envs/go${version}.env" 2> /dev/null
-
-  debug "$(go version)"
-}
-
-# setup_go_path "gopath"
-# This sets GOPATH and adds GOPATH/bin to the PATH.
-setup_go_path() {
-  local gopath="${1}"
-  if [ -z "$gopath" ]; then return; fi
-
-  # Setup GOPATH.
-  export GOPATH="${gopath}"
-
-  # Add GOPATH to PATH.
-  export PATH="${GOPATH}/bin:${PATH}"
-
-  debug "GOPATH=${GOPATH}"
-}
-
 jenkins_setup() {
   : "${HOME:?Need to set HOME to a non-empty value.}"
   : "${WORKSPACE:?Need to set WORKSPACE to a non-empty value.}"
@@ -87,18 +69,14 @@ jenkins_setup() {
     get_go_version
   fi
   
-  [ -f "$HOME/.gvm/scripts/gvm" ] && . $HOME/.gvm/scripts/gvm
-  
-  if [ -z "$(which gvm)" ]; then 
-    bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
-    . $HOME/.gvm/scripts/gvm
-  fi
-  
   # Setup Go.
   export GOPATH=${WORKSPACE}
   export PATH=${GOPATH}/bin:${PATH}
   
-  gvm use go${GO_VERSION}||gvm install go${GO_VERSION}
+  curl -sL -o ${WORKSPACE}/bin/gvm https://github.com/andrewkroh/gvm/releases/download/v0.1.0/gvm-${GVM_ARCH}-amd64
+  chmod +x ${WORKSPACE}/bin/gvm
+  eval "$(gvm ${GO_VERSION})"
+  go version
 
   # Workaround for Python virtualenv path being too long.
   export TEMP_PYTHON_ENV=$(mktemp -d)

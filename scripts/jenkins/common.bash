@@ -91,6 +91,8 @@ jenkins_setup() {
   export GOPATH=${WORKSPACE}
   export PATH=${GOPATH}/bin:${PATH}
   
+  [ -f "$HOME/.gvm/scripts/gvm" ] && . $HOME/.gvm/scripts/gvm
+  
   if [ -z "$(which gvm)" ]; then 
     bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
     . $HOME/.gvm/scripts/gvm

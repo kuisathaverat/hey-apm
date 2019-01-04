@@ -7,33 +7,6 @@
 # Script directory:
 _sdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-case $(uname) in
-"Darwin")
-  export GVM_ARCH="darwin"
-  ;;
-"Linux")
-  export GVM_ARCH="linux"
-  ;;
-"")
-  Message="I'm drowning here!  There's a partition at $space %!"
-  ;;
-*)
-  Message="I seem to be running with an nonexistent amount of disk space..."
-  ;;
-esa
-
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-  export GVM_ARCH="linux"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-  export GVM_ARCH="darwin"
-elif [[ "$OSTYPE" == "freebsd"* ]]; then
-  export GVM_ARCH="freebsd"
-else
-  err("Unknown OS")
-  exit 1
-fi
-
-ARCH
 # debug "msg"
 # Write a debug message to stderr.
 debug()
@@ -49,6 +22,17 @@ err()
 {
   echo "ERROR: $1" >&2
 }
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  export GVM_ARCH="linux"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  export GVM_ARCH="darwin"
+elif [[ "$OSTYPE" == "freebsd"* ]]; then
+  export GVM_ARCH="freebsd"
+else
+  err "Unknown OS"
+  exit 1
+fi
 
 # get_go_version
 # Read the project's Go version and return it in the GO_VERSION variable.

@@ -97,6 +97,7 @@ pipeline {
     }
     unstable { 
       echoColor(text: '[UNSTABLE]', colorfg: 'yellow', colorbg: 'default')
+      setGithubCommitStatus(message: 'Build result UNSTABLE', state: "UNSTABLE")
       step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: "${NOTIFY_TO}", sendToIndividuals: false])
     }
   }

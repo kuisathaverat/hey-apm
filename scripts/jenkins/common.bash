@@ -104,6 +104,8 @@ jenkins_setup() {
   # Write cached magefile binaries to workspace to ensure
   # each run starts from a clean slate.
   export MAGEFILE_CACHE="${WORKSPACE}/.magefile"
+  
+  export
 }
 
 docker_setup() {

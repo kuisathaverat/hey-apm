@@ -98,7 +98,7 @@ jenkins_setup() {
   export GOPATH=${WORKSPACE}
   export PATH=${GOPATH}/bin:${PATH}
   
-  eval "$(gvm ${GO_VERSION})"
+  gvm use ${GO_VERSION}
 
   # Workaround for Python virtualenv path being too long.
   export TEMP_PYTHON_ENV=$(mktemp -d)
